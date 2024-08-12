@@ -25,6 +25,14 @@ return {
 				notify = true,
 				treesitter_context = true,
 			},
+			custom_highlights = function(colors)
+				return {
+					Comment = { fg = colors.subtext1 },
+					LineNr = { fg = colors.text },
+					LineNrAbove = { fg = colors.overlay2 },
+					LineNrBelow = { fg = colors.overlay2 },
+				}
+			end,
 		},
 	},
 	-- {
