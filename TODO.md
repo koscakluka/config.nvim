@@ -9,3 +9,5 @@
 [ ] folke/trouble.nvim
 [ ] NeogitOrg/neogit
 [ ] folke/zen-mode.nvim
+[ ] folke/twilight.nvim
+[ ] klen/nvim-config-local
