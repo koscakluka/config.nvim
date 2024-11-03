@@ -39,7 +39,7 @@ vim.opt.scrolloff = 8
 vim.opt.signcolumn = "yes"
 vim.opt.isfname:append("@-@")
 
-vim.opt.colorcolumn = "80"
+vim.opt.colorcolumn = "81"
 
 vim.opt.cursorline = true
 
