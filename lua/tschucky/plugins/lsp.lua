@@ -261,4 +261,20 @@ return {
 			})
 		end,
 	},
+	-- {
+	-- 	"jmbuhr/otter.nvim",
+	-- 	dependencies = {
+	-- 		"nvim-treesitter/nvim-treesitter",
+	-- 	},
+	-- 	opts = {},
+	-- 	config = function()
+	-- 		local otter = require("otter")
+	-- 		otter.setup({
+	-- 			diagnostic_update_events = { "BufWritePost" },
+	-- 		})
+	-- 		vim.keymap.set("n", "<leader>do", function()
+	-- 			otter.activate()
+	-- 		end)
+	-- 	end,
+	-- },
 }
