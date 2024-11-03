@@ -12,11 +12,14 @@ return {
 				vim.cmd("keepalt Git")
 				-- vim.cmd("tab Git")
 			end)
+			vim.keymap.set("n", "<leader>gm", "<CMD>Git rebase main<CR>")
 		end,
 	},
 	{
 		"polarmutex/git-worktree.nvim",
-		version = "^2",
+		-- HACK: This is here until the hotfix gets versioned
+		branch = "main",
+		-- version = "^2",
 		dependencies = {
 			"nvim-lua/plenary.nvim",
 			"nvim-telescope/telescope.nvim",
@@ -28,8 +31,13 @@ return {
 			require("telescope").load_extension("git_worktree")
 			vim.keymap.set(
 				"n",
-				"<leader>st",
+				"<leader>gw",
 				"<CMD> lua require('telescope').extensions.git_worktree.git_worktree()<CR>"
+			)
+			vim.keymap.set(
+				"n",
+				"<leader>gn",
+				"<CMD> lua require('telescope').extensions.git_worktree.create_git_worktree()<CR>"
 			)
 		end,
 	},

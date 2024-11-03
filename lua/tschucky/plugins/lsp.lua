@@ -16,20 +16,15 @@ return {
 			-- [[ Configure LSP ]]
 			--  This function gets run when an LSP connects to a particular buffer.
 			local on_attach = function(_, bufnr)
-				-- NOTE: Remember that lua is a real programming language, and as such it is possible
-				-- to define small helper and utility functions so you don't have to repeat yourself
-				-- many times.
-				--
-
 				vim.keymap.set(
 					"n",
-					"<leader>vrn",
+					"<leader>cr",
 					vim.lsp.buf.rename,
 					{ buffer = bufnr, desc = "[V}ariable [R]e[n]ame" }
 				)
 				vim.keymap.set(
 					"n",
-					"<leader>vca",
+					"<leader>ca",
 					vim.lsp.buf.code_action,
 					{ buffer = bufnr, desc = "[V}ariable [C]ode [A]ction" }
 				)
@@ -54,7 +49,7 @@ return {
 				)
 				vim.keymap.set(
 					"n",
-					"<leader>D",
+					"<leader>gt",
 					require("telescope.builtin").lsp_type_definitions,
 					{ buffer = bufnr, desc = "Type [D]efinition" }
 				)
@@ -103,24 +98,6 @@ return {
 					vim.lsp.buf.format()
 				end, { desc = "Format current buffer with LSP" })
 			end
-
-			-- document existing key chains
-			require("which-key").register({
-				["<leader>c"] = { name = "[C]ode", _ = "which_key_ignore" },
-				["<leader>d"] = { name = "[D]ocument", _ = "which_key_ignore" },
-				["<leader>g"] = { name = "[G]it", _ = "which_key_ignore" },
-				["<leader>h"] = { name = "Git [H]unk", _ = "which_key_ignore" },
-				["<leader>r"] = { name = "[R]ename", _ = "which_key_ignore" },
-				["<leader>s"] = { name = "[S]earch", _ = "which_key_ignore" },
-				["<leader>t"] = { name = "[T]oggle", _ = "which_key_ignore" },
-				["<leader>w"] = { name = "[W]orkspace", _ = "which_key_ignore" },
-			})
-			-- register which-key VISUAL mode
-			-- required for visual <leader>hs (hunk stage) to work
-			require("which-key").register({
-				["<leader>"] = { name = "VISUAL <leader>" },
-				["<leader>h"] = { "Git [H]unk" },
-			}, { mode = "v" })
 
 			-- mason-lspconfig requires that these setup functions are called in this order
 			-- before setting up the servers.
@@ -240,7 +217,7 @@ return {
 					async = false,
 					timeout_ms = 5000,
 				})
-			end, { desc = "Format file" })
+			end, { desc = "[F]ormat file" })
 		end,
 	},
 	{
