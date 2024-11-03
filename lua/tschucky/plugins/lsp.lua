@@ -111,6 +111,7 @@ return {
 					"black",
 					"flake8",
 					"eslint_d",
+					"templ",
 				},
 			})
 
@@ -134,8 +135,18 @@ return {
 					},
 				},
 				tsserver = {},
-				html = { filetypes = { "html", "twig", "hbs" } },
-				tailwindcss = { files = { excluded = ".local" } },
+				html = { filetypes = { "html", "twig", "hbs", "templ" } },
+				tailwindcss = {
+					filetypes = { "templ", "astro", "javascript", "typescript", "javascriptreact", "typescriptreact" },
+					-- settings = {
+					-- 	tailwindCSS = {
+					-- 		includeLanguages = {
+					-- 			templ = "html",
+					-- 		},
+					-- 	},
+					-- },
+				},
+				templ = { "templ" },
 
 				lua_ls = {
 					Lua = {
@@ -196,6 +207,7 @@ return {
 					graphql = { "prettierd" },
 					lua = { "stylua" },
 					python = { "isort", "black" },
+					templ = { "templ" },
 				},
 				formatters = {
 					black = {
