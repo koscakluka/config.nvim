@@ -95,8 +95,14 @@ return {
 
 				-- Create a command `:Format` local to the LSP buffer
 				vim.api.nvim_buf_create_user_command(bufnr, "Format", function(_)
+					-- vim.api.nvim_command("EslintFixAll")
 					vim.lsp.buf.format()
 				end, { desc = "Format current buffer with LSP" })
+
+				-- vim.api.nvim_create_autocmd("BufWritePre", {
+				-- 	buffer = bufnr,
+				-- 	command = "EslintFixAll",
+				-- })
 			end
 
 			-- mason-lspconfig requires that these setup functions are called in this order
@@ -125,7 +131,11 @@ return {
 			--  define the property 'filetypes' to the map in question.
 			local servers = {
 				-- clangd = {},
-				gopls = {},
+				gopls = {
+					gopls = {
+						buildFlags = { "-tags=integration,ai,external" },
+					},
+				},
 				-- rust_analyzer = {},
 				pyright = {
 					python = {
@@ -134,7 +144,13 @@ return {
 						},
 					},
 				},
-				tsserver = {},
+				tsserver = { filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact", "astro" } },
+				eslint = {
+					settings = {
+						-- helps eslint find the eslintrc when it's placed in a subfolder instead of the cwd root
+						workingDirectory = { mode = "auto" },
+					},
+				},
 				html = { filetypes = { "html", "twig", "hbs", "templ" } },
 				tailwindcss = {
 					filetypes = { "templ", "astro", "javascript", "typescript", "javascriptreact", "typescriptreact" },
@@ -194,11 +210,11 @@ return {
 
 			conform.setup({
 				formatters_by_ft = {
-					javascript = { "prettierd" },
-					typescript = { "prettierd" },
-					javascriptreact = { "prettierd" },
-					typescriptreact = { "prettierd" },
-					svelte = { "prettierd" },
+					javascript = { "prettier" },
+					typescript = { "prettier" },
+					javascriptreact = { "prettier" },
+					typescriptreact = { "prettier" },
+					svelte = { "prettier" },
 					css = { "prettierd" },
 					html = { "prettierd" },
 					json = { "prettierd" },
@@ -242,11 +258,6 @@ return {
 			local lint = require("lint")
 
 			lint.linters_by_ft = {
-				javascript = { "eslint_d" },
-				typescript = { "eslint_d" },
-				javascriptreact = { "eslint_d" },
-				typescriptreact = { "eslint_d" },
-				svelte = { "eslint_d" },
 				python = { "flake8" },
 			}
 
