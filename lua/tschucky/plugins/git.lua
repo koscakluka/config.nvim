@@ -9,7 +9,7 @@ return {
 						return
 					end
 				end
-				vim.cmd("keepalt Git")
+				vim.cmd("keepalt vert Git | vertical resize 65")
 				-- vim.cmd("tab Git")
 			end)
 			vim.keymap.set("n", "<leader>gm", "<CMD>Git rebase main<CR>")
@@ -25,8 +25,64 @@ return {
 			"nvim-telescope/telescope.nvim",
 		},
 		config = function()
+			local Path = require("plenary.path")
 			local Hooks = require("git-worktree.hooks")
-			Hooks.register(Hooks.type.SWITCH, Hooks.builtins.update_current_buffer_on_switch)
+			Hooks.register(Hooks.type.SWITCH, function(_, prev_path)
+				local config = require("git-worktree.config")
+				local update_cmd = function()
+					vim.cmd(config.update_on_change_command)
+				end
+				if prev_path == nil then
+					update_cmd()
+					return
+				end
+
+				local cwd = vim.loop.cwd()
+				local current_buf_name = vim.api.nvim_buf_get_name(0)
+				if not current_buf_name or current_buf_name == "" then
+					update_cmd()
+					return
+				end
+
+				local is_oil = false
+				if current_buf_name:match("^oil://") then
+					is_oil = true
+					current_buf_name = current_buf_name:sub(7)
+				end
+
+				-- check if current buffer is already in the current directory
+				local name = Path:new(current_buf_name):absolute()
+				local start1, _ = string.find(name, cwd .. Path.path.sep, 1, true)
+				if start1 ~= nil then
+					return
+				end
+
+				-- check if the buffer is part of the current git worktree or
+				-- if we went above the root
+				local start, fin = string.find(name, prev_path, 1, true)
+				if start == nil then
+					update_cmd()
+					return
+				end
+
+				local local_name = name:sub(fin + 2)
+
+				local final_path = Path:new({ cwd, local_name }):absolute()
+
+				if not Path:new(final_path):exists() then
+					-- TODO: Open the closest parent maybe?
+					update_cmd()
+					return
+				end
+
+				if is_oil then
+					vim.cmd("Oil " .. final_path)
+					return
+				end
+
+				local bufnr = vim.fn.bufnr(final_path, true)
+				vim.api.nvim_set_current_buf(bufnr)
+			end)
 
 			require("telescope").load_extension("git_worktree")
 			vim.keymap.set(
@@ -119,5 +175,71 @@ return {
 				map({ "o", "x" }, "ih", ":<C-U>Gitsigns select_hunk<CR>", { desc = "select git hunk" })
 			end,
 		},
+	},
+	{
+		"kdheepak/lazygit.nvim",
+		lazy = true,
+		cmd = {
+			"LazyGit",
+			"LazyGitConfig",
+			"LazyGitCurrentFile",
+			"LazyGitFilter",
+			"LazyGitFilterCurrentFile",
+		},
+		-- optional for floating window border decoration
+		dependencies = {
+			"nvim-lua/plenary.nvim",
+		},
+		-- setting the keybinding for LazyGit with 'keys' is recommended in
+		-- order to load the plugin when the command is run for the first time
+		keys = {
+			{ "<leader>gg", "<cmd>LazyGit<cr>", desc = "LazyGit" },
+		},
+	},
+	{
+	  "pwntester/octo.nvim",
+	  cmd = "Octo",
+	  opts = {
+		-- or "fzf-lua" or "snacks" or "default"
+		picker = "telescope",
+		-- bare Octo command opens picker of commands
+		enable_builtin = true,
+	  },
+	  keys = {
+		{
+		  "<leader>oi",
+		  "<CMD>Octo issue list<CR>",
+		  desc = "List GitHub Issues",
+		},
+		{
+		  "<leader>op",
+		  "<CMD>Octo pr list<CR>",
+		  desc = "List GitHub PullRequests",
+		},
+		{
+		  "<leader>od",
+		  "<CMD>Octo discussion list<CR>",
+		  desc = "List GitHub Discussions",
+		},
+		{
+		  "<leader>on",
+		  "<CMD>Octo notification list<CR>",
+		  desc = "List GitHub Notifications",
+		},
+		{
+		  "<leader>os",
+		  function()
+			require("octo.utils").create_base_search_command { include_current_repo = true }
+		  end,
+		  desc = "Search GitHub",
+		},
+	  },
+	  dependencies = {
+		"nvim-lua/plenary.nvim",
+		"nvim-telescope/telescope.nvim",
+		-- OR "ibhagwan/fzf-lua",
+		-- OR "folke/snacks.nvim",
+		"nvim-tree/nvim-web-devicons",
+	  },
 	},
 }
