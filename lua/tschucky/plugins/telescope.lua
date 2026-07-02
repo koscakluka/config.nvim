@@ -15,6 +15,7 @@ return {
 				return vim.fn.executable("make") == 1
 			end,
 		},
+		'nvim-telescope/telescope-ui-select.nvim'
 	},
 	config = function()
 		-- [[ Configure Telescope ]]
@@ -28,10 +29,32 @@ return {
 					},
 				},
 			},
+			extensions = {
+				["ui-select"] = {
+				  require("telescope.themes").get_dropdown {
+					-- even more opts
+				  }
+
+				  -- pseudo code / specification for writing custom displays, like the one
+				  -- for "codeactions"
+				  -- specific_opts = {
+				  --   [kind] = {
+				  --     make_indexed = function(items) -> indexed_items, width,
+				  --     make_displayer = function(widths) -> displayer
+				  --     make_display = function(displayer) -> function(e)
+				  --     make_ordinal = function(e) -> string
+				  --   },
+				  --   -- for example to disable the custom builtin "codeactions" display
+				  --      do the following
+				  --   codeactions = false,
+				  -- }
+				}
+			},
 		})
 
 		-- Enable telescope fzf native, if installed
 		pcall(require("telescope").load_extension, "fzf")
+		require("telescope").load_extension("ui-select")
 
 		-- Telescope live_grep in git root
 		-- Function to find the git root directory based on the current buffer's path
@@ -100,9 +123,8 @@ return {
 			{ desc = "[S]earch [S]elect Telescope" }
 		)
 		vim.keymap.set("n", "<C-p>", require("telescope.builtin").git_files, { desc = "Search [G]it [F]iles" })
-		vim.keymap.set("n", "<leader>pf", function()
-			require("telescope.builtin").find_files({ hidden = true })
-		end, { desc = "[S]earch [F]iles" })
+		-- See: https://github.com/LunarVim/LunarVim/discussions/3770
+		vim.keymap.set("n", "<leader>pf", require("telescope.builtin").find_files, { desc = "[S]earch [F]iles" })
 		vim.keymap.set("n", "<leader>sh", require("telescope.builtin").help_tags, { desc = "[S]earch [H]elp" })
 		vim.keymap.set(
 			"n",
