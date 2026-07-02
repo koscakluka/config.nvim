@@ -13,7 +13,7 @@ return {
 	-- TODO: This should probably be in some other place, figure out later
 	{
 		"davidmh/mdx.nvim",
-		config = true,
+		-- config = true,
 		dependencies = { "nvim-treesitter/nvim-treesitter" },
 	},
 }
